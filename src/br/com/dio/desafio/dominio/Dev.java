@@ -6,10 +6,20 @@ public class Dev {
     private String nome;
     private Set<Conteudo> conteudosInscritos = new LinkedHashSet<>();
     private Set<Conteudo> conteudosConcluidos = new LinkedHashSet<>();
+    private Set<Bootcamp> bootcampsInscritos = new HashSet<>();
+
+    public Dev(String nome) {
+        this.nome = nome;
+    }
+
+    public Dev() {
+
+    }
 
     public void inscreverBootcamp(Bootcamp bootcamp){
         this.conteudosInscritos.addAll(bootcamp.getConteudos());
         bootcamp.getDevsInscritos().add(this);
+        this.bootcampsInscritos.add(bootcamp);
     }
 
     public void progredir() {
@@ -17,26 +27,26 @@ public class Dev {
         if(conteudo.isPresent()) {
             this.conteudosConcluidos.add(conteudo.get());
             this.conteudosInscritos.remove(conteudo.get());
+            System.out.println("Progressão registrada com sucesso!");
         } else {
             System.err.println("Você não está matriculado em nenhum conteúdo!");
         }
     }
 
     public double calcularTotalXp() {
-        Iterator<Conteudo> iterator = this.conteudosConcluidos.iterator();
-        double soma = 0;
-        while(iterator.hasNext()){
-            double next = iterator.next().calcularXp();
-            soma += next;
-        }
-        return soma;
-
-        /*return this.conteudosConcluidos
+        return this.conteudosConcluidos
                 .stream()
                 .mapToDouble(Conteudo::calcularXp)
-                .sum();*/
+                .sum();
     }
 
+    public Set<Bootcamp> getBootcampsInscritos() {
+        return bootcampsInscritos;
+    }
+
+    public void setBootcampsInscritos(Set<Bootcamp> bootcampsInscritos) {
+        this.bootcampsInscritos = bootcampsInscritos;
+    }
 
     public String getNome() {
         return nome;
@@ -73,5 +83,23 @@ public class Dev {
     @Override
     public int hashCode() {
         return Objects.hash(nome, conteudosInscritos, conteudosConcluidos);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Dev: ").append(nome).append("\n");
+        sb.append("Bootcamps Registrados:\n");
+        for (Bootcamp bootcamp : bootcampsInscritos) {
+            sb.append("- ").append(bootcamp.getNome()).append("\n");
+            sb.append("  Conteúdos:\n");
+            for (Conteudo conteudo : conteudosInscritos) {
+                if (bootcamp.getConteudos().contains(conteudo)) {
+                    sb.append("  ").append(conteudo).append("\n");
+                }
+            }
+        }
+        sb.append("XP Total: ").append(calcularTotalXp());
+        return sb.toString();
     }
 }

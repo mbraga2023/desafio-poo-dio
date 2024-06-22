@@ -1,10 +1,7 @@
 package br.com.dio.desafio.dominio;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Bootcamp {
     private String nome;
@@ -14,6 +11,10 @@ public class Bootcamp {
     private Set<Dev> devsInscritos = new HashSet<>();
     private Set<Conteudo> conteudos = new LinkedHashSet<>();
 
+    public Bootcamp(String nome, String descricao) {
+        this.nome = nome;
+        this.descricao = descricao;
+    }
 
     public String getNome() {
         return nome;
@@ -51,8 +52,12 @@ public class Bootcamp {
         return conteudos;
     }
 
-    public void setConteudos(Set<Conteudo> conteudos) {
-        this.conteudos = conteudos;
+    public void adicionarConteudo(Conteudo conteudo) {
+        conteudos.add(conteudo);
+    }
+
+    public void removerConteudo(Conteudo conteudo) {
+        conteudos.remove(conteudo);
     }
 
     @Override
@@ -60,11 +65,52 @@ public class Bootcamp {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Bootcamp bootcamp = (Bootcamp) o;
-        return Objects.equals(nome, bootcamp.nome) && Objects.equals(descricao, bootcamp.descricao) && Objects.equals(dataInicial, bootcamp.dataInicial) && Objects.equals(dataFinal, bootcamp.dataFinal) && Objects.equals(devsInscritos, bootcamp.devsInscritos) && Objects.equals(conteudos, bootcamp.conteudos);
+        return Objects.equals(nome, bootcamp.nome) && Objects.equals(descricao, bootcamp.descricao);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, descricao, dataInicial, dataFinal, devsInscritos, conteudos);
+        return Objects.hash(nome, descricao);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Bootcamp: ").append(nome)
+                .append(" - ").append(descricao)
+                .append(", Data Inicial: ").append(dataInicial)
+                .append(", Data Final: ").append(dataFinal)
+                .append(", Devs Inscritos: ");
+
+        if (!devsInscritos.isEmpty()) {
+            // Append names of devsInscritos
+            Iterator<Dev> iterator = devsInscritos.iterator();
+            while (iterator.hasNext()) {
+                sb.append(iterator.next().getNome());
+                if (iterator.hasNext()) {
+                    sb.append(", ");
+                }
+            }
+        } else {
+            sb.append("Nenhum Dev inscrito");
+        }
+
+        sb.append(", Conteúdos: ");
+
+        if (!conteudos.isEmpty()) {
+            Iterator<Conteudo> iterator = conteudos.iterator();
+            while (iterator.hasNext()) {
+                sb.append("").append(iterator.next().getTitulo());
+                if (iterator.hasNext()) {
+                    sb.append(", ");
+                }
+            }
+        } else {
+            sb.append("Nenhum conteúdo registrado");
+        }
+
+        return sb.toString();
+    }
+
+
 }
